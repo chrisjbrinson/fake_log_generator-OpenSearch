@@ -1,4 +1,5 @@
 import random
+import uuid
 
 
 JOBS = [
@@ -25,30 +26,22 @@ ERRORS = [
     "SNMP Timeout"
 ]
 
+RUNNING_JOBS = []
 
 def create_ucmdb_event():
 
-    success = random.random() < 0.90
+    job_id = str(uuid.uuid4())
 
-    if success:
-
-        return {
-            "application": "UCMDB",
-            "event_type": "discovery_job",
-            "job": random.choice(JOBS),
-            "probe": random.choice(PROBES),
-            "status": "SUCCESS",
-            "duration_ms": random.randint(3000, 45000),
-            "nodes_discovered": random.randint(25, 400),
-            "severity": "INFO"
-        }
-
-    return {
+    event = {
         "application": "UCMDB",
+        "job_id": job_id,
         "event_type": "discovery_job",
         "job": random.choice(JOBS),
         "probe": random.choice(PROBES),
-        "status": "FAILED",
-        "error": random.choice(ERRORS),
-        "severity": "ERROR"
+        "status": "STARTED",
+        "severity": "INFO"
     }
+
+    RUNNING_JOBS.append(event)
+
+    return event
