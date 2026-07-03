@@ -6,7 +6,7 @@ def get_client():
 
     client = OpenSearch(
         hosts=[{"host": "opensearch", "port": 9200}],
-        http_auth=("admin", "YourStrongPassword123!"),
+        http_auth=("admin", "MyStrongPassword123!"),
         use_ssl=True,
         verify_certs=False,
         ssl_assert_hostname=False,

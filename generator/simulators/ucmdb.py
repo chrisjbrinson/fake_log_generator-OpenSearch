@@ -29,25 +29,8 @@ ERRORS = [
 
 RUNNING_JOBS = []
 
-def create_ucmdb_event():
 
-    if RUNNING_JOBS and random.random() < 0.7:
-
-        running_job = RUNNING_JOBS.pop(0)
-
-        return {
-            "application": "UCMDB",
-            "job_id": running_job["job_id"],
-            "event_type": "discovery_job",
-            "job": running_job["job"],
-            "probe": running_job["probe"],
-            "status": "SUCCESS",
-            "severity": "INFO",
-            "duration_ms": int(
-                (datetime.now(timezone.utc) - running_job["started_at"]).total_seconds() * 1000
-            )
-        }
-
+def start_job():
 
     job_id = str(uuid.uuid4())
 
@@ -66,8 +49,62 @@ def create_ucmdb_event():
             "job_id": job_id,
             "job": event["job"],
             "probe": event["probe"],
-            "started_at": datetime.now(timezone.utc)
+            "started_at": datetime.now(timezone.utc),
+            "step": 0
         }
     )
 
     return event
+
+
+def advance_job():
+
+    running_job = RUNNING_JOBS[0]
+
+    running_job["step"] += 1
+
+    return {
+        "application": "UCMDB",
+        "job_id": running_job["job_id"],
+        "event_type": "discovery_job",
+        "job": running_job["job"],
+        "probe": running_job["probe"],
+        "status": "CONNECTING",
+        "severity": "INFO"
+    }
+
+
+def finish_job():
+
+    running_job = RUNNING_JOBS.pop(0)
+
+    return {
+        "application": "UCMDB",
+        "job_id": running_job["job_id"],
+        "event_type": "discovery_job",
+        "job": running_job["job"],
+        "probe": running_job["probe"],
+        "status": "SUCCESS",
+        "severity": "INFO",
+        "duration_ms": int(
+            (
+                datetime.now(timezone.utc)
+                - running_job["started_at"]
+            ).total_seconds() * 1000
+        )
+    }
+
+
+def create_ucmdb_event():
+
+    if RUNNING_JOBS:
+
+        roll = random.random()
+
+        if roll < 0.4:
+            return advance_job()
+
+        if roll < 0.8:
+            return finish_job()
+
+    return start_job()
