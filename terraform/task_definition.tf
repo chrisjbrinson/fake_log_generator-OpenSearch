@@ -40,14 +40,15 @@ resource "aws_ecs_task_definition" "generator" {
         {
           name  = "LOG_INTERVAL"
           value = "2"
+        },
+        {
+            name = "OPENSEARCH_USERNAME"
+            value = var.opensearch_username
         }
       ]
 
       secrets = [
-        {
-          name      = "OPENSEARCH_USERNAME"
-          valueFrom = "${aws_secretsmanager_secret.opensearch.arn}:username::"
-        },
+     
         {
           name      = "OPENSEARCH_PASSWORD"
           valueFrom = "${aws_secretsmanager_secret.opensearch.arn}:password::"

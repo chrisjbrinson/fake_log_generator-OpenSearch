@@ -61,12 +61,6 @@ resource "aws_opensearch_domain_policy" "main" {
         Action = "es:*"
 
         Resource = "${aws_opensearch_domain.main.arn}/*"
-
-        Condition = {
-          IpAddress = {
-            "aws:SourceIp" = var.my_ip
-          }
-        }
       }
     ]
   })
