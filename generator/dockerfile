@@ -11,4 +11,4 @@ COPY opensearch_client.py .
 COPY event_generator.py .
 COPY simulators ./simulators
 
-CMD ["python", "app.py"]
+CMD ["python", "-u", "app.py"]
