@@ -37,7 +37,8 @@ jobs:
         run: |
           docker build \
             -f generator/Dockerfile \
-            -t ${{ env.ECR_REPOSITORY }}:latest .
+            -t ${{ env.ECR_REPOSITORY }}:latest \
+            generator
 
           docker tag \
             ${{ env.ECR_REPOSITORY }}:latest \
