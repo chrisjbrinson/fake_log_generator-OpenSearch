@@ -1,25 +1,31 @@
+import os
+import time
 from datetime import datetime, timezone
 
-from opensearch_client import get_client
 from event_generator import create_event
-import time
+from opensearch_client import get_client
 
 client = get_client()
 
+INDEX_PREFIX = os.environ.get("INDEX_PREFIX", "logs")
+LOG_INTERVAL = float(os.environ.get("LOG_INTERVAL", "2"))
+
 while True:
+    try:
+        event = create_event()
 
-    event = create_event()
+        now = datetime.now(timezone.utc)
 
-    now = datetime.now(timezone.utc)
+        index_name = f"{INDEX_PREFIX}-{now.strftime('%Y.%m.%d-%H')}"
 
-    index_name = now.strftime("logs-%Y.%m.%d-%H")
+        response = client.index(
+            index=index_name,
+            body=event
+        )
 
-    response = client.index(
-        index=index_name,
-        body=event,
-        refresh=True
-    )
+        print(f"Indexed {response['_id']} into {index_name}")
 
-    print(f"Indexed {response['_id']} into {index_name}")
+    except Exception as e:
+        print(f"Failed to index document: {e}")
 
-    time.sleep(2)
+    time.sleep(LOG_INTERVAL)
