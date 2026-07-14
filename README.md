@@ -2,7 +2,7 @@
 
 A Python-based log simulator that generates realistic enterprise events and ingests them into OpenSearch for learning and experimentation.
 
-Currently reworking the app to run in ECS and using Amazon Opensearch domain
+For simplicity, the OpenSearch domain is publicly accessible in this lab. In production, I would deploy it into private subnets to restrict access.
 
 ## Features
 
