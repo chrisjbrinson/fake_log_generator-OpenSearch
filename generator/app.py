@@ -6,6 +6,7 @@ from event_generator import create_event
 from opensearch_client import get_client
 
 client = get_client()
+print(f"Username: {os.environ['OPENSEARCH_USERNAME']}")
 
 INDEX_PREFIX = os.environ.get("INDEX_PREFIX", "logs")
 LOG_INTERVAL = float(os.environ.get("LOG_INTERVAL", "2"))
